@@ -1,7 +1,8 @@
 <?php
 /**
- * Configuración de entorno y credenciales para el Kiosco Online.
+ * Configuración de entorno y credenciales para el Kiosco Virtual / Coffee Shop (Equipo 8).
  * Carga automática de variables desde el archivo .env mediante vlucas/phpdotenv (Composer).
+ * Si no existe vendor/, el sistema funciona igual con los valores por defecto de XAMPP.
  */
 
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
@@ -26,16 +27,25 @@ define('DB_NAME', getEnvVal('DB_NAME', 'kiosco_online'));
 define('DB_USER', getEnvVal('DB_USER', 'root'));
 define('DB_PASS', getEnvVal('DB_PASS', ''));
 
-// Mercado Pago Credentials
-define('MP_ACCESS_TOKEN', getEnvVal('MP_ACCESS_TOKEN', 'APP_USR-3299995297656254-072823-1b60f780d4ceb9b258bfc28dd699b3ef-1180343997'));
-define('MP_PUBLIC_KEY', getEnvVal('MP_PUBLIC_KEY', 'APP_USR-8d94ae1c-8b88-428c-b480-141ecc202f46'));
+// Mercado Pago Credentials (configurar en el archivo .env — nunca commitear tokens reales)
+define('MP_ACCESS_TOKEN', getEnvVal('MP_ACCESS_TOKEN', ''));
+define('MP_PUBLIC_KEY', getEnvVal('MP_PUBLIC_KEY', ''));
 
-// URL Base del proyecto en XAMPP (sanitizada sin comillas ni barras al final)
+// URL Base del proyecto (sanitizada sin comillas ni barras al final).
+// Si no está definida en .env, se autodetecta según la carpeta dentro de htdocs.
 $rawBaseUrl = getEnvVal('BASE_URL');
 if (!$rawBaseUrl) {
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-    $rawBaseUrl = $protocol . "://" . $host . "/2026/Antigravity";
+
+    // Autodetectar la ruta del proyecto relativa al DocumentRoot de Apache
+    $docRoot = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? ''), '/');
+    $projDir = str_replace('\\', '/', __DIR__);
+    $relPath = ($docRoot !== '' && strpos($projDir, $docRoot) === 0)
+        ? substr($projDir, strlen($docRoot))
+        : '';
+
+    $rawBaseUrl = $protocol . "://" . $host . $relPath;
 }
 
 $cleanBaseUrl = trim($rawBaseUrl, "\"' \t\n\r\0\x0B/");
@@ -44,5 +54,3 @@ if (!preg_match('/^https?:\/\//i', $cleanBaseUrl)) {
 }
 
 define('BASE_URL', $cleanBaseUrl);
-
-

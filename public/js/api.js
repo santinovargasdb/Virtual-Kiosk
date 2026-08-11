@@ -1,11 +1,12 @@
 /**
  * Módulo de API para la comunicación entre Frontend JS y el Backend PHP
+ * del Coffee Shop (Equipo 8).
  */
 export const API = {
   /**
-   * Obtiene los productos desde el backend PHP MySQL
-   * @param {string} category 
-   * @param {string} searchQuery 
+   * Obtiene los productos de la carta desde el backend PHP MySQL
+   * @param {string} category
+   * @param {string} searchQuery
    * @returns {Promise<Array>}
    */
   async getProducts(category = '', searchQuery = '') {
@@ -30,12 +31,14 @@ export const API = {
   },
 
   /**
-   * Envía los productos del carrito al backend para registrar la orden en MySQL
-   * y generar la Preferencia de Pago con Mercado Pago.
-   * @param {Array} cartItems 
+   * Envía el pedido completo al backend para registrar la orden en MySQL
+   * (con las notas de personalización de cada café y el horario de retiro
+   * Take Away) y generar la Preferencia de Pago con Mercado Pago.
+   * @param {Array} cartItems  Ítems del carrito con su personalización
+   * @param {string} pickupTime  Horario de retiro del pedido (HH:MM)
    * @returns {Promise<Object>}
    */
-  async createCheckoutPreference(cartItems) {
+  async createCheckoutPreference(cartItems, pickupTime) {
     try {
       const response = await fetch('api/create_preference.php', {
         method: 'POST',
@@ -43,9 +46,16 @@ export const API = {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+          horario_retiro: pickupTime,
           items: cartItems.map(item => ({
             id: item.id,
-            quantity: item.quantity
+            quantity: item.quantity,
+            personalizacion: {
+              leche: item.personalizacion?.leche || null,
+              azucar: item.personalizacion?.azucar || null,
+              sin_tacc: !!item.personalizacion?.sin_tacc,
+              nota: item.personalizacion?.nota || ''
+            }
           }))
         })
       });

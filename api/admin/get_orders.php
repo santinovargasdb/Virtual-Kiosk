@@ -12,7 +12,7 @@ try {
 
     // 1. Obtener listado de ordenes
     $result = $db->query("
-        SELECT id, external_reference, monto_total, estado, mp_payment_id, mp_merchant_order_id, created_at, updated_at
+        SELECT id, external_reference, monto_total, horario_retiro, estado, mp_payment_id, mp_merchant_order_id, created_at, updated_at
         FROM ordenes
         ORDER BY id DESC
         LIMIT 100
@@ -21,7 +21,7 @@ try {
 
     // 2. Obtener items de cada orden
     $stmtItems = $db->prepare("
-        SELECT oi.id, oi.orden_id, oi.producto_id, oi.cantidad, oi.precio_unitario, p.nombre as producto_nombre
+        SELECT oi.id, oi.orden_id, oi.producto_id, oi.cantidad, oi.precio_unitario, oi.notas_personalizacion, p.nombre as producto_nombre
         FROM orden_items oi
         LEFT JOIN productos p ON oi.producto_id = p.id
         WHERE oi.orden_id = ?

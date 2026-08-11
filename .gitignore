@@ -1,0 +1,23 @@
+# Credenciales y configuración local (nunca subir tokens reales)
+.env
+
+# Dependencias de Composer
+/vendor/
+composer.lock
+
+# Logs generados en tiempo de ejecución
+api/webhook.log
+*.log
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs y editores
+.idea/
+.vscode/
+*.sublime-*
+
+# Dependencias de Node (si se agregan herramientas de front)
+node_modules/

@@ -10,7 +10,7 @@ try {
     $category = trim($_GET['category'] ?? '');
     $search = trim($_GET['q'] ?? '');
 
-    $sql = "SELECT id, nombre, descripcion, precio, categoria, imagen_url, stock, destacado FROM productos WHERE 1=1";
+    $sql = "SELECT id, nombre, descripcion, precio, categoria, imagen_url, stock, destacado, personalizable FROM productos WHERE 1=1";
     $types = "";
     $params = [];
 
@@ -46,6 +46,7 @@ try {
         $prod['precio'] = (float)$prod['precio'];
         $prod['stock'] = (int)$prod['stock'];
         $prod['destacado'] = (bool)$prod['destacado'];
+        $prod['personalizable'] = (bool)$prod['personalizable'];
     }
 
     echo json_encode([

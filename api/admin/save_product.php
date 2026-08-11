@@ -25,6 +25,7 @@ try {
     $imagenUrl = trim($data['imagen_url'] ?? '');
     $stock = (int)($data['stock'] ?? 0);
     $destacado = !empty($data['destacado']) ? 1 : 0;
+    $personalizable = !empty($data['personalizable']) ? 1 : 0;
 
     if (empty($nombre)) {
         http_response_code(400);
@@ -54,10 +55,11 @@ try {
                 categoria = ?,
                 imagen_url = ?,
                 stock = ?,
-                destacado = ?
+                destacado = ?,
+                personalizable = ?
             WHERE id = ?
         ");
-        $stmt->bind_param("ssdssiii", $nombre, $descripcion, $precio, $categoria, $imagenUrl, $stock, $destacado, $id);
+        $stmt->bind_param("ssdssiiii", $nombre, $descripcion, $precio, $categoria, $imagenUrl, $stock, $destacado, $personalizable, $id);
         $stmt->execute();
 
         echo json_encode([
@@ -68,10 +70,10 @@ try {
     } else {
         // Insertar nuevo producto
         $stmt = $db->prepare("
-            INSERT INTO productos (nombre, descripcion, precio, categoria, imagen_url, stock, destacado)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO productos (nombre, descripcion, precio, categoria, imagen_url, stock, destacado, personalizable)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $stmt->bind_param("ssdssii", $nombre, $descripcion, $precio, $categoria, $imagenUrl, $stock, $destacado);
+        $stmt->bind_param("ssdssiii", $nombre, $descripcion, $precio, $categoria, $imagenUrl, $stock, $destacado, $personalizable);
         $stmt->execute();
 
         $newId = (int)$db->insert_id;

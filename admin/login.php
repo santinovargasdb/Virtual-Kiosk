@@ -12,16 +12,17 @@ if (isAdminAuthenticated()) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acceso Administrador - Kiosco Online</title>
+  <title>Acceso a la Barra - Octava Café</title>
   <link rel="stylesheet" href="../public/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☕</text></svg>">
 </head>
 <body>
 
   <div class="login-container">
     <div class="login-header">
-      <div class="logo-icon" style="margin: 0 auto; width: 52px; height: 52px;">🔐</div>
-      <h1 class="login-title">Panel de Administración</h1>
-      <p style="font-size: 0.85rem; color: var(--text-muted);">Ingresa tus credenciales para gestionar productos</p>
+      <div class="logo-icon" style="margin: 0 auto; width: 52px; height: 52px;">☕</div>
+      <h1 class="login-title">Barra - Octava Café</h1>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">Ingresá tus credenciales para ver las comandas y gestionar la carta</p>
     </div>
 
     <div id="login-error" class="alert-error"></div>
@@ -43,7 +44,7 @@ if (isAdminAuthenticated()) {
     </form>
 
     <div style="margin-top: 1.5rem; text-align: center;">
-      <a href="../index.php" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: none;">← Volver al Kiosco Público</a>
+      <a href="../index.php" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: none;">← Volver a la Carta del Kiosco Virtual</a>
     </div>
   </div>
 
