@@ -1,19 +1,40 @@
-FROM php:8.2-apache
+FROM php:8.2-fpm-alpine
 
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
-
-RUN rm -f /etc/apache2/mods-enabled/mpm_*.load \
-    && rm -f /etc/apache2/mods-enabled/mpm_*.conf \
-    && ln -s /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load \
-    && ln -s /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf \
-    && ln -s /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/rewrite.load
+RUN apk add --no-cache nginx
 
 COPY . /var/www/html/
 
 RUN chown -R www-data:www-data /var/www/html
 
+COPY <<'EOF' /etc/nginx/http.d/default.conf
+server {
+    listen 80;
+    root /var/www/html;
+    index index.php;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+EOF
+
+COPY <<'EOF' /start.sh
+#!/bin/sh
+php-fpm -D
+nginx -g "daemon off;"
+EOF
+
+RUN chmod +x /start.sh
+
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+CMD ["/start.sh"]
